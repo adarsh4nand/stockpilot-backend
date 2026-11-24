@@ -124,7 +124,7 @@ This project includes a comprehensive **Postman Collection** featuring positive 
 
 ## 👨‍💻 Author
 **Adarsh Anand**  
-*Computer Science Student*  
+*B.Tech CSE Student*  
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/adarsh4nand)
 
 ---
