@@ -1,0 +1,12 @@
+import { Router } from "express";
+import { verifyJWT } from "../middleware/auth.middleware.js";
+import { authorizeRoles } from "../middleware/role.middleware.js";
+import { checkout, getMyOrders, getOrderById, updateStatus, cancelOrder } from "../controllers/order.controller.js";
+const router = Router();
+router.use(verifyJWT);
+router.post("/checkout", authorizeRoles("customer"), checkout);
+router.get("/my", authorizeRoles("customer"), getMyOrders);
+router.get("/:id", getOrderById);
+router.patch("/:id/status", authorizeRoles("seller", "admin"), updateStatus);
+router.post("/:id/cancel", authorizeRoles("customer"), cancelOrder);
+export default router;

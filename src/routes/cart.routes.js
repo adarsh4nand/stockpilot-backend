@@ -1,0 +1,12 @@
+import { Router } from "express";
+import { verifyJWT } from "../middleware/auth.middleware.js";
+import { authorizeRoles } from "../middleware/role.middleware.js";
+import { getCart, addItem, updateItem, removeItem, clearCart } from "../controllers/cart.controller.js";
+const router = Router();
+router.use(verifyJWT, authorizeRoles("customer"));
+router.get("/", getCart);
+router.post("/items", addItem);
+router.patch("/items/:productId", updateItem);
+router.delete("/items/:productId", removeItem);
+router.delete("/", clearCart);
+export default router;

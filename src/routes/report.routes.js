@@ -1,0 +1,10 @@
+import { Router } from "express";
+import { verifyJWT } from "../middleware/auth.middleware.js";
+import { authorizeRoles } from "../middleware/role.middleware.js";
+import { salesSummary, bestSelling, inventorySummary } from "../controllers/report.controller.js";
+const router = Router();
+router.use(verifyJWT, authorizeRoles("admin", "seller"));
+router.get("/sales-summary", salesSummary);
+router.get("/best-selling", bestSelling);
+router.get("/inventory-summary", inventorySummary);
+export default router;
