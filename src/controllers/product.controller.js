@@ -12,6 +12,15 @@ const buildPagination = (query) => {
   return { page, limit, skip: (page - 1) * limit };
 };
 
+/**
+ * @description Creates a new product. Restricted to sellers and admins.
+ * @param {import('express').Request} req - Express request object
+ * @param {import('express').Response} res - Express response object
+ * @throws {ApiError} 400 - If required fields are missing or invalid
+ * @throws {ApiError} 404 - If category does not exist
+ * @returns {Promise<void>} 201 Created
+ */
+
 // SELLER / ADMIN — create product
 const createProduct = asyncHandler(async (req, res) => {
   const { name, description, price, category, sku, stock, lowStockThreshold, images } = req.body;
@@ -39,6 +48,13 @@ const createProduct = asyncHandler(async (req, res) => {
 
   return res.status(201).json(new ApiResponse(201, product, "Product created successfully"));
 });
+
+/**
+ * @description Fetches public products with search, filter, sort, and pagination.
+ * @param {import('express').Request} req - Express request object (query params: search, category, minPrice, maxPrice, inStock, sort, page, limit)
+ * @param {import('express').Response} res - Express response object
+ * @returns {Promise<void>} 200 OK with paginated products
+ */
 
 // PUBLIC — search, filter, sort, pagination
 const getProducts = asyncHandler(async (req, res) => {
@@ -94,6 +110,15 @@ const getProducts = asyncHandler(async (req, res) => {
   );
 });
 
+/**
+ * @description Fetches a single product by its ID.
+ * @param {import('express').Request} req - Express request object (params: id)
+ * @param {import('express').Response} res - Express response object
+ * @throws {ApiError} 400 - If ID is invalid
+ * @throws {ApiError} 404 - If product is not found
+ * @returns {Promise<void>} 200 OK with populated product
+ */
+
 // PUBLIC — single product
 const getProductById = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -106,6 +131,15 @@ const getProductById = asyncHandler(async (req, res) => {
 
   return res.status(200).json(new ApiResponse(200, product, "Product fetched successfully"));
 });
+
+/**
+ * @description Updates a product. Sellers can only update their own products.
+ * @param {import('express').Request} req - Express request object
+ * @param {import('express').Response} res - Express response object
+ * @throws {ApiError} 403 - If seller tries to update another seller's product
+ * @throws {ApiError} 404 - If product not found
+ * @returns {Promise<void>} 200 OK with updated product
+ */
 
 // SELLER (own only) / ADMIN (any) — update
 const updateProduct = asyncHandler(async (req, res) => {
@@ -142,6 +176,15 @@ const updateProduct = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, updated, "Product updated successfully"));
 });
 
+/**
+ * @description Deletes a product. Sellers can only delete their own products.
+ * @param {import('express').Request} req - Express request object
+ * @param {import('express').Response} res - Express response object
+ * @throws {ApiError} 403 - If seller tries to delete another seller's product
+ * @throws {ApiError} 404 - If product not found
+ * @returns {Promise<void>} 200 OK
+ */
+
 // SELLER (own only) / ADMIN (any) — delete
 const deleteProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -159,6 +202,13 @@ const deleteProduct = asyncHandler(async (req, res) => {
   await Product.findByIdAndDelete(id);
   return res.status(200).json(new ApiResponse(200, {}, "Product deleted successfully"));
 });
+
+/**
+ * @description Fetches all products listed by the currently authenticated seller/admin.
+ * @param {import('express').Request} req - Express request object
+ * @param {import('express').Response} res - Express response object
+ * @returns {Promise<void>} 200 OK with paginated products
+ */
 
 // SELLER / ADMIN — my own listings (includes inactive products)
 const getMyProducts = asyncHandler(async (req, res) => {
